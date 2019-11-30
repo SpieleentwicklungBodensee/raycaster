@@ -34,7 +34,20 @@ level = ['########',
          ]
 
 
+def renderRaycasting():
+    pass
+
+
+def renderResult():
+    pass
+
+
 def render():
+    renderResult()
+
+    if RENDER_RAYCASTING:
+        renderRaycasting()        
+
     pygame.transform.scale(screen, (WIN_W, WIN_H), window)
     pygame.display.flip()
     

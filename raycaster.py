@@ -55,8 +55,15 @@ def raycast():
     STEP = FOV / SCR_W    
     
     for i in range(SCR_W):
-        angle = viewangle - FOV/2 + (STEP * i)
-        angle %= 360
+        nearsize_h = math.tan(math.radians(FOV/2))
+        
+        # 0 -> -nearsize_h
+        # 160.5 -> 0
+        # 320 -> +nearsize_h
+        
+        n = ((i + 0.5) / SCR_W * 2 -1) * nearsize_h
+        a = math.atan(n) + math.radians(viewangle)
+        
 
         # find box (simple version)
         
@@ -65,8 +72,6 @@ def raycast():
         
         found = False
         steps = 1
-        
-        a = math.radians(angle)
         
         while not found:
             newx = math.cos(a) * steps + dotx
@@ -78,7 +83,7 @@ def raycast():
             if t == '#' or t == 'X':
                 found = True
                 
-        rays.append((angle, steps, t))
+        rays.append((math.degrees(a), steps, t))
         
 
 def renderRaycasting():

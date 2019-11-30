@@ -55,14 +55,15 @@ def raycast():
     
     STEP = FOV / SCR_W    
     
+    # 0 -> -NEARSIZE_H
+    # 160.5 -> 0
+    # 320 -> +NEARSIZE_H
+
+    NEARSIZE_H = math.tan(math.radians(FOV/2))
+    
     for i in range(SCR_W):
-        nearsize_h = math.tan(math.radians(FOV/2))
         
-        # 0 -> -nearsize_h
-        # 160.5 -> 0
-        # 320 -> +nearsize_h
-        
-        n = ((i + 0.5) / SCR_W * 2 -1) * nearsize_h
+        n = ((i + 0.5) / SCR_W * 2 -1) * NEARSIZE_H
         a = math.atan(n) + math.radians(viewangle)
 
         # find box (simple version)

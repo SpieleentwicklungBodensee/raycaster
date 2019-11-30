@@ -41,8 +41,8 @@ level = ['########',
 LEV_W = len(level[0])
 LEV_H = len(level)
 
-WALLCOLORS = {'#': (40, 40, 40),
-              'X': (120, 120, 120),
+WALLCOLORS = {'#': (64, 64, 64),
+              'X': (96, 64, 32),
               }
 
 
@@ -121,8 +121,9 @@ def renderResult():
 
 
 def render():
-    screen.fill((192, 192, 192))
-
+    screen.fill((128, 168, 192))
+    screen.fill((64, 128, 64), rect=(0, SCR_H / 2, SCR_W, SCR_H / 2))
+    
     renderResult()
 
     if RENDER_RAYCASTING:

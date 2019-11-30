@@ -87,10 +87,8 @@ def renderRaycasting():
             t = level[y][x]
             tilerect = (x * TILESIZE, y * TILESIZE, TILESIZE -1, TILESIZE -1)
             
-            if t == '#':
-                pygame.draw.rect(screen, (0, 0, 0), tilerect, 0)
-            elif t == 'X':
-                pygame.draw.rect(screen, (80, 80, 80), tilerect, 0)
+            if t != ' ':
+                pygame.draw.rect(screen, WALLCOLORS[t], tilerect, 0)
                 
     pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
     

@@ -24,6 +24,7 @@ px = 4 * WALLSIZE
 py = 4 * WALLSIZE
 
 viewangle = 0
+pdir = 0
 
 
 level = ['########',
@@ -45,14 +46,14 @@ rays = []
 
 def raycast():
     global rays
+    rays = []
+    
     STEP = FOV / SCR_W    
     
     for i in range(SCR_W):
         angle = viewangle - FOV/2 + (STEP * i)
         angle %= 360
         rays.append(angle)
-        print(angle)
-    print('---')
 
 
 def renderRaycasting():
@@ -92,11 +93,29 @@ def render():
     
 
 def controls():
-    while True:
-        for e in pygame.event.get():
-            if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_ESCAPE:
-                    return False
+    global viewangle, pdir
+
+    for e in pygame.event.get():
+        if e.type == pygame.KEYDOWN:
+            if e.key == pygame.K_ESCAPE:
+                return False
+                
+            if e.key == pygame.K_LEFT:
+                pdir = -1
+                
+            if e.key == pygame.K_RIGHT:
+                pdir = 1
+
+        if e.type == pygame.KEYUP:
+            if e.key == pygame.K_LEFT:
+                if pdir < 0:
+                    pdir = 0
+                
+            if e.key == pygame.K_RIGHT:
+                if pdir > 0:
+                    pdir = 0
+    
+    viewangle += pdir * 1
                 
     return True
 

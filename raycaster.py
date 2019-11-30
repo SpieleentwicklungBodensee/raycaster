@@ -21,7 +21,7 @@ RENDER_RAYCASTING = True
 FOV = 80.0
 
 px = 4 * WALLSIZE
-py = 4 * WALLSIZE
+py = 1.5 * WALLSIZE
 
 viewangle = 0
 pxdir = 0
@@ -206,8 +206,9 @@ def controls():
     newy = math.sin(math.radians(viewangle)) * pydir + math.cos(math.radians(viewangle)) * pxdir + py
 
 
-    if level[int(newy/WALLSIZE)][int(newx/WALLSIZE)] == " ":
+    if level[int(py/WALLSIZE)][int(newx/WALLSIZE)] == " ":
         px = newx
+    if level[int(newy/WALLSIZE)][int(px/WALLSIZE)] == " ":
         py = newy
                 
     return True

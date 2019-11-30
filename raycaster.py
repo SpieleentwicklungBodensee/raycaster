@@ -14,6 +14,8 @@ window = pygame.display.set_mode((WIN_W, WIN_H))
 
 screen = pygame.Surface((SCR_W, SCR_H))
 
+RENDER_RAYCASTING = True
+
 
 FOV = 80
 

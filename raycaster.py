@@ -66,9 +66,11 @@ def raycast():
         found = False
         steps = 1
         
+        a = math.radians(angle)
+        
         while not found:
-            newx = math.cos(math.radians(angle)) * steps + dotx
-            newy = math.sin(math.radians(angle)) * steps + doty
+            newx = math.cos(a) * steps + dotx
+            newy = math.sin(a) * steps + doty
             steps += 1
             
             t = level[int(newy / WALLSIZE)][int(newx / WALLSIZE)]
@@ -103,7 +105,9 @@ def renderResult():
     for x in range(SCR_W):
         angle, steps, t = rays[x]
         
-        default_lineheight = SCR_H * 0.75
+        steps *= math.cos(math.radians(angle - viewangle))
+        
+        default_lineheight = SCR_H * 0.75 
         lineheight = WALLSIZE / steps * default_lineheight
         
         top = (x, SCR_H / 2 - lineheight / 2)

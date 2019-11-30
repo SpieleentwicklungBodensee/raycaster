@@ -44,6 +44,10 @@ LEV_H = len(level)
 WALLCOLORS = {'#': (64, 64, 64),
               'X': (96, 64, 32),
               }
+              
+BRIGHTCOLORS = {'#': (80, 80, 80),
+                'X': (112, 80, 48),
+                }
 
 
 rays = []
@@ -68,15 +72,13 @@ def raycast():
 
         # find box (simple version)
         
-        dotx = px
-        doty = py
-        
         found = False
+        bright = False
         steps = 1
         
         while not found:
-            newx = math.cos(a) * steps + dotx
-            newy = math.sin(a) * steps + doty
+            newx = math.cos(a) * steps + px
+            newy = math.sin(a) * steps + py
             steps += 1
             
             t = level[int(newy / WALLSIZE)][int(newx / WALLSIZE)]
@@ -84,7 +86,10 @@ def raycast():
             if t == '#' or t == 'X':
                 found = True
                 
-        rays.append((math.degrees(a), steps, t))
+                if abs((newx % WALLSIZE) - 32) > abs((newy % WALLSIZE) - 32):
+                    bright = True
+                
+        rays.append((math.degrees(a), steps, t, bright))
         
 
 def renderRaycasting():
@@ -98,7 +103,7 @@ def renderRaycasting():
                 
     pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
     
-    for angle, steps, t in rays:
+    for angle, steps, t, bright in rays:
         p1 = (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE)
         p2 = (math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0], math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1])
         
@@ -107,7 +112,7 @@ def renderRaycasting():
 
 def renderResult():
     for x in range(SCR_W):
-        angle, steps, t = rays[x]
+        angle, steps, t, bright = rays[x]
         
         steps *= math.cos(math.radians(angle - viewangle))
         
@@ -117,7 +122,10 @@ def renderResult():
         top = (x, SCR_H / 2 - lineheight / 2)
         bottom = (x, SCR_H / 2 + lineheight / 2)
         
-        pygame.draw.line(screen, WALLCOLORS[t], top, bottom)
+        if bright:
+            pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
+        else:
+            pygame.draw.line(screen, WALLCOLORS[t], top, bottom)            
 
 
 def render():

@@ -7,7 +7,8 @@ WIN_H = 720
 SCR_W = 320
 SCR_H = 180
 
-WALLSIZE = 64
+WALLSIZE = 64   # "physical" size of the wall
+TILESIZE = 16   # size of a wall tile when rendering map
 
 pygame.display.init()
 window = pygame.display.set_mode((WIN_W, WIN_H))
@@ -43,11 +44,14 @@ def renderRaycasting():
     for y in range(LEV_H):
         for x in range(LEV_W):
             t = level[y][x]
+            tilerect = (x * TILESIZE, y * TILESIZE, TILESIZE -1, TILESIZE -1)
             
             if t == '#':
-                pygame.draw.rect(screen, (0, 0, 0), (x * 16, y * 16, 15, 15), 0)
+                pygame.draw.rect(screen, (0, 0, 0), tilerect, 0)
             elif t == 'X':
-                pygame.draw.rect(screen, (80, 80, 80), (x * 16, y * 16, 15, 15), 0)
+                pygame.draw.rect(screen, (80, 80, 80), tilerect, 0)
+                
+    pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
 
 
 def renderResult():

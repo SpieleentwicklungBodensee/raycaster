@@ -50,10 +50,9 @@ BRIGHTCOLORS = {'#': (80, 80, 80),
                 'X': (112, 80, 48),
                 }
                 
-TEXTURES = {'#': (pygame.image.load('stonewall.png'), pygame.image.load('stonewall-dark.png')),
-            'X': (pygame.image.load('woodwall.png'), pygame.image.load('woodwall-dark.png')),
+TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load('textures/ironwall-dark.png')),
+            'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
             }
-
 
 rays = []
 

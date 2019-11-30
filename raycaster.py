@@ -206,7 +206,7 @@ def controls():
     newy = math.sin(math.radians(viewangle)) * pydir + math.cos(math.radians(viewangle)) * pxdir + py
 
 
-    if level[int(newy/WALLSIZEds)][int(newx/WALLSIZE)] == " ":
+    if level[int(newy/WALLSIZE)][int(newx/WALLSIZE)] == " ":
         px = newx
         py = newy
                 

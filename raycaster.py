@@ -201,12 +201,14 @@ def controls():
             mx, my = pygame.mouse.get_rel()
             
             viewangle += mx
-    
+
     newx = math.cos(math.radians(viewangle)) * pydir - math.sin(math.radians(viewangle)) * pxdir + px
     newy = math.sin(math.radians(viewangle)) * pydir + math.cos(math.radians(viewangle)) * pxdir + py
-    
-    px = newx
-    py = newy
+
+
+    if level[int(newy/WALLSIZEds)][int(newx/WALLSIZE)] == " ":
+        px = newx
+        py = newy
                 
     return True
 

@@ -8,7 +8,7 @@ SCR_W = 320
 SCR_H = 180
 
 WALLSIZE = 64   # "physical" size of the wall
-TILESIZE = 16   # size of a wall tile when rendering map
+TILESIZE = 8   # size of a wall tile when rendering map
 
 pygame.display.init()
 window = pygame.display.set_mode((WIN_W, WIN_H))
@@ -39,6 +39,10 @@ level = ['########',
          
 LEV_W = len(level[0])
 LEV_H = len(level)
+
+WALLCOLORS = {'#': (40, 40, 40),
+              'X': (120, 120, 120),
+              }
 
 
 rays = []
@@ -72,7 +76,7 @@ def raycast():
             if t == '#' or t == 'X':
                 found = True
                 
-        rays.append((angle, steps))
+        rays.append((angle, steps, t))
         
 
 def renderRaycasting():
@@ -88,7 +92,7 @@ def renderRaycasting():
                 
     pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
     
-    for angle, steps in rays:
+    for angle, steps, t in rays:
         p1 = (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE)
         p2 = (math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0], math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1])
         
@@ -96,7 +100,16 @@ def renderRaycasting():
 
 
 def renderResult():
-    pass
+    for x in range(SCR_W):
+        angle, steps, t = rays[x]
+        
+        default_lineheight = SCR_H * 0.75
+        lineheight = WALLSIZE / steps * default_lineheight
+        
+        top = (x, SCR_H / 2 - lineheight / 2)
+        bottom = (x, SCR_H / 2 + lineheight / 2)
+        
+        pygame.draw.line(screen, WALLCOLORS[t], top, bottom)
 
 
 def render():

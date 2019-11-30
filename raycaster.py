@@ -1,4 +1,4 @@
-
+import math
 import pygame
 
 WIN_W = 1280
@@ -18,12 +18,12 @@ screen = pygame.Surface((SCR_W, SCR_H))
 RENDER_RAYCASTING = True
 
 
-FOV = 80
+FOV = 80.0
 
 px = 4 * WALLSIZE
 py = 4 * WALLSIZE
 
-viewangle = 90
+viewangle = 0
 
 
 level = ['########',
@@ -40,6 +40,21 @@ LEV_W = len(level[0])
 LEV_H = len(level)
 
 
+rays = []
+
+
+def raycast():
+    global rays
+    STEP = FOV / SCR_W    
+    
+    for i in range(SCR_W):
+        angle = viewangle - FOV/2 + (STEP * i)
+        angle %= 360
+        rays.append(angle)
+        print(angle)
+    print('---')
+
+
 def renderRaycasting():
     for y in range(LEV_H):
         for x in range(LEV_W):
@@ -52,6 +67,12 @@ def renderRaycasting():
                 pygame.draw.rect(screen, (80, 80, 80), tilerect, 0)
                 
     pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
+    
+    for angle in rays:
+        p1 = (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE)
+        p2 = (math.cos(math.radians(angle)) * WALLSIZE + p1[0], math.sin(math.radians(angle)) * WALLSIZE + p1[1])
+        
+        pygame.draw.line(screen, (0, 255, 0), p1, p2)
 
 
 def renderResult():
@@ -83,6 +104,7 @@ def controls():
 running = True
 
 while running:
+    raycast()
     render()
     running = controls()
     

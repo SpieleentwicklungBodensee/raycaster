@@ -24,7 +24,8 @@ px = 4 * WALLSIZE
 py = 4 * WALLSIZE
 
 viewangle = 0
-pdir = 0
+pxdir = 0
+pydir = 0
 
 
 level = ['########',
@@ -63,7 +64,6 @@ def raycast():
         
         n = ((i + 0.5) / SCR_W * 2 -1) * nearsize_h
         a = math.atan(n) + math.radians(viewangle)
-        
 
         # find box (simple version)
         
@@ -132,29 +132,52 @@ def render():
     
 
 def controls():
-    global viewangle, pdir
+    global viewangle, pxdir, pydir, px, py
 
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
             if e.key == pygame.K_ESCAPE:
                 return False
                 
-            if e.key == pygame.K_LEFT:
-                pdir = -1
+            if e.key == pygame.K_a:
+                pxdir = -1
                 
-            if e.key == pygame.K_RIGHT:
-                pdir = 1
+            if e.key == pygame.K_d:
+                pxdir = 1
+                
+            if e.key == pygame.K_w:
+                pydir = 1
+                
+            if e.key == pygame.K_s:
+                pydir = -1
 
         if e.type == pygame.KEYUP:
-            if e.key == pygame.K_LEFT:
-                if pdir < 0:
-                    pdir = 0
+            if e.key == pygame.K_a:
+                if pxdir < 0:
+                    pxdir = 0
                 
-            if e.key == pygame.K_RIGHT:
-                if pdir > 0:
-                    pdir = 0
+            if e.key == pygame.K_d:
+                if pxdir > 0:
+                    pxdir = 0
+                    
+            if e.key == pygame.K_w:
+                if pydir > 0:
+                    pydir = 0
+                
+            if e.key == pygame.K_s:
+                if pydir < 0:
+                    pydir = 0
     
-    viewangle += pdir * 1
+        if e.type == pygame.MOUSEMOTION:
+            mx, my = pygame.mouse.get_rel()
+            
+            viewangle += mx
+    
+    newx = math.cos(math.radians(viewangle)) * pydir - math.sin(math.radians(viewangle)) * pxdir + px
+    newy = math.sin(math.radians(viewangle)) * pydir + math.cos(math.radians(viewangle)) * pxdir + py
+    
+    px = newx
+    py = newy
                 
     return True
 

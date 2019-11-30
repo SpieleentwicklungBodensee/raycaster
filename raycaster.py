@@ -53,8 +53,27 @@ def raycast():
     for i in range(SCR_W):
         angle = viewangle - FOV/2 + (STEP * i)
         angle %= 360
-        rays.append(angle)
 
+        # find box (simple version)
+        
+        dotx = px
+        doty = py
+        
+        found = False
+        steps = 1
+        
+        while not found:
+            newx = math.cos(math.radians(angle)) * steps + dotx
+            newy = math.sin(math.radians(angle)) * steps + doty
+            steps += 1
+            
+            t = level[int(newy / WALLSIZE)][int(newx / WALLSIZE)]
+            
+            if t == '#' or t == 'X':
+                found = True
+                
+        rays.append((angle, steps))
+        
 
 def renderRaycasting():
     for y in range(LEV_H):
@@ -69,9 +88,9 @@ def renderRaycasting():
                 
     pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
     
-    for angle in rays:
+    for angle, steps in rays:
         p1 = (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE)
-        p2 = (math.cos(math.radians(angle)) * WALLSIZE + p1[0], math.sin(math.radians(angle)) * WALLSIZE + p1[1])
+        p2 = (math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0], math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1])
         
         pygame.draw.line(screen, (0, 255, 0), p1, p2)
 

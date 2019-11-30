@@ -34,10 +34,20 @@ level = ['########',
          '#      #',
          '########',
          ]
+         
+LEV_W = len(level[0])
+LEV_H = len(level)
 
 
 def renderRaycasting():
-    pass
+    for y in range(LEV_H):
+        for x in range(LEV_W):
+            t = level[y][x]
+            
+            if t == '#':
+                pygame.draw.rect(screen, (0, 0, 0), (x * 16, y * 16, 15, 15), 0)
+            elif t == 'X':
+                pygame.draw.rect(screen, (80, 80, 80), (x * 16, y * 16, 15, 15), 0)
 
 
 def renderResult():
@@ -45,6 +55,8 @@ def renderResult():
 
 
 def render():
+    screen.fill((192, 192, 192))
+
     renderResult()
 
     if RENDER_RAYCASTING:

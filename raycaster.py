@@ -106,12 +106,12 @@ def renderRaycasting():
             if t != ' ':
                 pygame.draw.rect(screen, WALLCOLORS[t], tilerect, 0)
                 
-    pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
+    pygame.draw.rect(screen, (255, 0, 0), (int(px / WALLSIZE * TILESIZE), int(py / WALLSIZE * TILESIZE), 2, 2))
     
     for angle, steps, t, bright, newx, newy in rays:
-        p1 = (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE)
-        p2 = (math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0], math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1])
-        
+        p1 = (int(px / WALLSIZE * TILESIZE), int(py / WALLSIZE * TILESIZE))
+        p2 = (int(math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0]), int(math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1]))
+
         pygame.draw.line(screen, (0, 255, 0), p1, p2)
 
 
@@ -131,13 +131,13 @@ def renderResult():
         bottom = (x, SCR_H / 2 + lineheight / 2)
         
         texture = TEXTURES[t][0 if bright else 1]
-        strip.blit(texture, (-(newx % WALLSIZE) if not bright else -(newy % WALLSIZE), 0))
+        strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
         
         texo = (-(newx % WALLSIZE) if not bright else -(newy % WALLSIZE))
         
         #strip = pygame.Surface((20,20))
         scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
-        screen.blit(scaledstrip, (x, top[1]))
+        screen.blit(scaledstrip, (x, int(top[1])))
         #pygame.transform.scale(strip, (x, top[1], 1, bottom[1] - top[1]), screen)
         
         #pygame.draw.line(screen, (255,0,0), (x, 0),(x, int(abs(texo))))
@@ -150,7 +150,7 @@ def renderResult():
 
 def render():
     screen.fill((128, 168, 192))
-    screen.fill((64, 128, 64), rect=(0, SCR_H / 2, SCR_W, SCR_H / 2))
+    screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
     
     renderResult()
 

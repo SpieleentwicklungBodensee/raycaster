@@ -48,6 +48,10 @@ WALLCOLORS = {'#': (64, 64, 64),
 BRIGHTCOLORS = {'#': (80, 80, 80),
                 'X': (112, 80, 48),
                 }
+                
+TEXTURES = {'#': (pygame.image.load('stonewall.png'), pygame.image.load('stonewall-dark.png')),
+            'X': (pygame.image.load('woodwall.png'), pygame.image.load('woodwall-dark.png')),
+            }
 
 
 rays = []
@@ -89,7 +93,7 @@ def raycast():
                 if abs((newx % WALLSIZE) - 32) > abs((newy % WALLSIZE) - 32):
                     bright = True
                 
-        rays.append((math.degrees(a), steps, t, bright))
+        rays.append((math.degrees(a), steps, t, bright, newx, newy))
         
 
 def renderRaycasting():
@@ -103,7 +107,7 @@ def renderRaycasting():
                 
     pygame.draw.rect(screen, (255, 0, 0), (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE, 2, 2))
     
-    for angle, steps, t, bright in rays:
+    for angle, steps, t, bright, newx, newy in rays:
         p1 = (px / WALLSIZE * TILESIZE, py / WALLSIZE * TILESIZE)
         p2 = (math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0], math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1])
         
@@ -111,8 +115,11 @@ def renderRaycasting():
 
 
 def renderResult():
+    strip = pygame.Surface((1, WALLSIZE))
+    
     for x in range(SCR_W):
-        angle, steps, t, bright = rays[x]
+        
+        angle, steps, t, bright, newx, newy = rays[x]
         
         steps *= math.cos(math.radians(angle - viewangle))
         
@@ -122,10 +129,22 @@ def renderResult():
         top = (x, SCR_H / 2 - lineheight / 2)
         bottom = (x, SCR_H / 2 + lineheight / 2)
         
-        if bright:
-            pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
-        else:
-            pygame.draw.line(screen, WALLCOLORS[t], top, bottom)            
+        texture = TEXTURES[t][0 if bright else 1]
+        strip.blit(texture, (-(newx % WALLSIZE) if not bright else -(newy % WALLSIZE), 0))
+        
+        texo = (-(newx % WALLSIZE) if not bright else -(newy % WALLSIZE))
+        
+        #strip = pygame.Surface((20,20))
+        scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
+        screen.blit(scaledstrip, (x, top[1]))
+        #pygame.transform.scale(strip, (x, top[1], 1, bottom[1] - top[1]), screen)
+        
+        #pygame.draw.line(screen, (255,0,0), (x, 0),(x, int(abs(texo))))
+        
+        #if bright:
+        #    pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
+        #else:
+        #    pygame.draw.line(screen, WALLCOLORS[t], top, bottom)            
 
 
 def render():

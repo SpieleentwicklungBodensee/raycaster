@@ -67,8 +67,6 @@ def raycast():
     global rays
     rays = []
     
-    STEP = FOV / SCR_W    
-    
     # 0 -> -NEARSIZE_H
     # 160.5 -> 0
     # 320 -> +NEARSIZE_H
@@ -162,8 +160,6 @@ def renderResult():
         if TEXTURES_ENABLED:
             texture = TEXTURES[t][0 if bright else 1]
             strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
-            
-            texo = (-(newx % WALLSIZE) if not bright else -(newy % WALLSIZE))
             
             scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
             screen.blit(scaledstrip, (x, int(top[1])))

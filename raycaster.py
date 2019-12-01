@@ -1,8 +1,8 @@
 import math
 import pygame
 
-WIN_W = 1920
-WIN_H = 1080
+WIN_W = 1280
+WIN_H = 720
 
 SCR_W = 320
 SCR_H = 180
@@ -10,8 +10,12 @@ SCR_H = 180
 WALLSIZE = 64   # "physical" size of the wall
 TILESIZE = 8   # size of a wall tile when rendering map
 
+# you can choose here
+FULLSCREEN = pygame.FULLSCREEN
+FULLSCREEN = 0
+
 pygame.display.init()
-window = pygame.display.set_mode((WIN_W, WIN_H), pygame.FULLSCREEN)
+window = pygame.display.set_mode((WIN_W, WIN_H), FULLSCREEN)
 
 screen = pygame.Surface((SCR_W, SCR_H))
 

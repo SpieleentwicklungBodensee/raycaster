@@ -78,8 +78,6 @@ def raycast():
         
         n = ((i + 0.5) / SCR_W * 2 -1) * NEARSIZE_H
         a = math.atan(n) + math.radians(viewangle)
-
-        # find box (simple version)
         
         found = False
         bright = False

@@ -79,22 +79,48 @@ def raycast():
         
         found = False
         bright = False
-        steps = 1
-        
-        while not found:
-            newx = math.cos(a) * steps + px
-            newy = math.sin(a) * steps + py
-            steps += 1
-            
-            t = level[int(newy / WALLSIZE)][int(newx / WALLSIZE)]
-            
+
+        dx, dy = math.cos(a), math.sin(a)
+        bx, by = int(px / WALLSIZE), int(py / WALLSIZE)
+        if dx >= 0:
+            bx += 1
+        if dy >= 0:
+            by += 1
+        dbx = -1 if dx < 0 else 1
+        dby = -1 if dy < 0 else 1
+
+        if bx * WALLSIZE == px:
+            bx += dbx
+        if by * WALLSIZE == py:
+            by += dby
+
+        l = 0.0
+        while True:
+            lx = (bx * WALLSIZE - px) / dx
+            ly = (by * WALLSIZE - py) / dy
+
+            if lx < ly:
+                l = lx
+                nx = bx if dx >= 0 else bx - 1
+                ny = int((py + dy * l) / WALLSIZE)
+                bx += dbx
+            else:
+                l = ly
+                nx = int((px + dx * l) / WALLSIZE)
+                ny = by if dy >= 0 else by - 1
+                by += dby
+
+            t = level[ny][nx]
             if t == '#' or t == 'X':
-                found = True
-                
-                if abs((newx % WALLSIZE) - 32) > abs((newy % WALLSIZE) - 32):
-                    bright = True
-                
-        rays.append((math.degrees(a), steps, t, bright, newx, newy))
+                break
+
+        newx = px + dx * l
+        newy = py + dy * l
+        
+        if abs((newx % WALLSIZE) - 32) > abs((newy % WALLSIZE) - 32):
+            bright = True
+
+        rays.append((math.degrees(a), max(l, 0.5), t, bright, newx, newy))
         
 
 def renderRaycasting():
@@ -111,7 +137,7 @@ def renderRaycasting():
     for angle, steps, t, bright, newx, newy in rays:
         p1 = (int(px / WALLSIZE * TILESIZE), int(py / WALLSIZE * TILESIZE))
         p2 = (int(math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0]), int(math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1]))
-
+        
         pygame.draw.line(screen, (0, 255, 0), p1, p2)
 
 
@@ -202,10 +228,10 @@ def controls():
             mx, my = pygame.mouse.get_rel()
             
             viewangle += mx
-
+    
     newx = math.cos(math.radians(viewangle)) * pydir - math.sin(math.radians(viewangle)) * pxdir + px
     newy = math.sin(math.radians(viewangle)) * pydir + math.cos(math.radians(viewangle)) * pxdir + py
-
+    
 
     if level[int(py/WALLSIZE)][int(newx/WALLSIZE)] == " ":
         px = newx

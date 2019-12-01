@@ -4,5 +4,9 @@
 ![raycaster](.github/Screenshot.png "raycaster screenshot")
 
 
-> Raycasting schickt für jedes Pixel des Betrachters (des zu berechnenden Bilds) einen Sehstrahl (Primärstrahlen) durch das Volumen. Der Strahl wird innerhalb des Volumens verfolgt und die Farb- und Opazitätswerte in regelmäßigen Abständen an den Abtast-Punkten auf dem Strahl bestimmt. Es wird ebenfalls die Schattierung an allen Abtastpunkten, für die Farbwerte, berechnet. Der so erhaltene Vektor, für den Sehstrahl, enthält die geordneten Abtast-Werte (Farb-, Opazitätswerte), wobei die Farbwerte dem Quellterm und die Opazitätswerte dem Extinktionskoeffizienten entsprechen. In einem letzten Schritt, dem Compositing, werden dann die Farb- und Opazitätswerte kombiniert und das aus dem Sehstrahl resultierende Pixel in der Bildebene errechnet.  
+> In der Computerspielentwicklung bezeichnet der Begriff Raycasting das auf einer zweidimensionalen Karte basierte Berechnen einer Pseudo-3D-Ansicht. Auf Basis der Entfernung zu einem Objekt, den ein „Sichtstrahl“ trifft, wird zum einen die Objektfarbe vertikal zentriert dargestellt und zum anderen der Anteil an Decke oder Boden der entsprechenden Pixel-Spalte berechnet. Im Gegensatz zur normalen Raytracing-Technik wird hier nur eine einzelne Bildzeile abgetastet, um das gesamte Bild zu berechnen; die Verdeckungsberechnung findet also nur in einer Ebene und nicht im Raum statt. Diese Art des Raycasting findet zum Beispiel im Computerspiel Wolfenstein 3D Anwendung.
+Entsprechend der oberen Grafik wird die Bildpunktfarbe festgestellt (oberer „Streifen“) und entsprechend der Entfernung wird ein vertikaler Bereich in dieser Farbe gezeichnet. Alle übrigen Bereiche sind Himmel bzw. Decke oder Boden.
+>
+
+>Da diese Technik keinem echten 3D entspricht, unterliegt sie diversen Einschränkungen: Es können keine dreidimensionalen Objekte wie Personen und Gegenstände dargestellt werden, Boden und Decke sind immer gleich hoch und Schrägen sind nicht möglich. 
 > *(aus der [Wikipedia](https://de.wikipedia.org/wiki/Raycasting))*

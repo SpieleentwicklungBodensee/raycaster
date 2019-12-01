@@ -20,6 +20,7 @@ window = pygame.display.set_mode((WIN_W, WIN_H), FULLSCREEN)
 screen = pygame.Surface((SCR_W, SCR_H))
 
 SHOW_MAP = True
+TEXTURES_ENABLED = True
 
 
 FOV = 80.0
@@ -152,28 +153,25 @@ def renderResult():
         
         steps *= math.cos(math.radians(angle - viewangle))
         
-        default_lineheight = SCR_H * 0.75 
+        default_lineheight = SCR_H * 1.0
         lineheight = WALLSIZE / steps * default_lineheight
         
         top = (x, SCR_H / 2 - lineheight / 2)
         bottom = (x, SCR_H / 2 + lineheight / 2)
         
-        texture = TEXTURES[t][0 if bright else 1]
-        strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
-        
-        texo = (-(newx % WALLSIZE) if not bright else -(newy % WALLSIZE))
-        
-        #strip = pygame.Surface((20,20))
-        scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
-        screen.blit(scaledstrip, (x, int(top[1])))
-        #pygame.transform.scale(strip, (x, top[1], 1, bottom[1] - top[1]), screen)
-        
-        #pygame.draw.line(screen, (255,0,0), (x, 0),(x, int(abs(texo))))
-        
-        #if bright:
-        #    pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
-        #else:
-        #    pygame.draw.line(screen, WALLCOLORS[t], top, bottom)            
+        if TEXTURES_ENABLED:
+            texture = TEXTURES[t][0 if bright else 1]
+            strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
+            
+            texo = (-(newx % WALLSIZE) if not bright else -(newy % WALLSIZE))
+            
+            scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
+            screen.blit(scaledstrip, (x, int(top[1])))
+        else:
+            if bright:
+                pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
+            else:
+                pygame.draw.line(screen, WALLCOLORS[t], top, bottom)            
 
 
 def render():
@@ -190,7 +188,7 @@ def render():
     
 
 def controls():
-    global viewangle, pxdir, pydir, px, py, SHOW_MAP
+    global viewangle, pxdir, pydir, px, py, SHOW_MAP, TEXTURES_ENABLED
 
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
@@ -208,6 +206,9 @@ def controls():
                 
             if e.key == pygame.K_s:
                 pydir = -1
+                
+            if e.key == pygame.K_F11:
+                TEXTURES_ENABLED = not TEXTURES_ENABLED
                 
             if e.key == pygame.K_F12:
                 SHOW_MAP = not SHOW_MAP

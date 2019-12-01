@@ -1,8 +1,8 @@
 import math
 import pygame
 
-WIN_W = 1280
-WIN_H = 720
+WIN_W = 1920
+WIN_H = 1080
 
 SCR_W = 320
 SCR_H = 180
@@ -11,11 +11,11 @@ WALLSIZE = 64   # "physical" size of the wall
 TILESIZE = 8   # size of a wall tile when rendering map
 
 pygame.display.init()
-window = pygame.display.set_mode((WIN_W, WIN_H))
+window = pygame.display.set_mode((WIN_W, WIN_H), pygame.FULLSCREEN)
 
 screen = pygame.Surface((SCR_W, SCR_H))
 
-RENDER_RAYCASTING = True
+SHOW_MAP = True
 
 
 FOV = 80.0
@@ -180,7 +180,7 @@ def render():
     
     renderResult()
 
-    if RENDER_RAYCASTING:
+    if SHOW_MAP:
         renderRaycasting()        
 
     pygame.transform.scale(screen, (WIN_W, WIN_H), window)
@@ -188,7 +188,7 @@ def render():
     
 
 def controls():
-    global viewangle, pxdir, pydir, px, py
+    global viewangle, pxdir, pydir, px, py, SHOW_MAP
 
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
@@ -206,6 +206,9 @@ def controls():
                 
             if e.key == pygame.K_s:
                 pydir = -1
+                
+            if e.key == pygame.K_F12:
+                SHOW_MAP = not SHOW_MAP
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_a:

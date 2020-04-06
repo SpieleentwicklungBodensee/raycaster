@@ -8,7 +8,7 @@ Hinweise:
 =========
 
 - benötigt Python und Pygame
-- Steuerung mit WASD (vorwärts, rückwärts, seitwärts laufen) SHIFT (sprinten) und Maus (drehen)
+- Steuerung mit WASD (vorwärts, rückwärts, seitwärts laufen), SHIFT (sprinten) und Maus (drehen)
 - mit F11 können die Texturen an- und ausgeschaltet werden
 - mit F12 kann die Minimap (die zudem auch das Raycasting visualisiert) ein- und ausgeblendet werden
 - mit ESCAPE wird das Spiel geschlossen

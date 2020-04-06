@@ -19,6 +19,9 @@ window = pygame.display.set_mode((WIN_W, WIN_H), FULLSCREEN)
 
 screen = pygame.Surface((SCR_W, SCR_H))
 
+pygame.mouse.set_visible(False)
+pygame.event.set_grab(True)
+
 SHOW_MAP = True
 TEXTURES_ENABLED = True
 
@@ -31,6 +34,7 @@ py = 1.5 * WALLSIZE
 viewangle = 0
 pxdir = 0
 pydir = 0
+speed = 1
 
 
 level = ['####################',
@@ -181,10 +185,9 @@ def render():
 
     pygame.transform.scale(screen, (WIN_W, WIN_H), window)
     pygame.display.flip()
-    
 
 def controls():
-    global viewangle, pxdir, pydir, px, py, SHOW_MAP, TEXTURES_ENABLED
+    global viewangle, pxdir, pydir, px, py, speed, SHOW_MAP, TEXTURES_ENABLED
 
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
@@ -202,6 +205,9 @@ def controls():
                 
             if e.key == pygame.K_s:
                 pydir = -1
+
+            if e.key == pygame.K_LSHIFT:
+                speed = 2
                 
             if e.key == pygame.K_F11:
                 TEXTURES_ENABLED = not TEXTURES_ENABLED
@@ -225,15 +231,17 @@ def controls():
             if e.key == pygame.K_s:
                 if pydir < 0:
                     pydir = 0
+
+            if e.key == pygame.K_LSHIFT:
+                speed = 1
     
         if e.type == pygame.MOUSEMOTION:
             mx, my = pygame.mouse.get_rel()
             
             viewangle += mx
     
-    newx = math.cos(math.radians(viewangle)) * pydir - math.sin(math.radians(viewangle)) * pxdir + px
-    newy = math.sin(math.radians(viewangle)) * pydir + math.cos(math.radians(viewangle)) * pxdir + py
-    
+    newx = math.cos(math.radians(viewangle)) * pydir * speed - math.sin(math.radians(viewangle)) * pxdir * speed + px
+    newy = math.sin(math.radians(viewangle)) * pydir * speed + math.cos(math.radians(viewangle)) * pxdir * speed + py
 
     if level[int(py/WALLSIZE)][int(newx/WALLSIZE)] == " ":
         px = newx

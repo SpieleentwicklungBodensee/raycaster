@@ -192,7 +192,11 @@ def controls():
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
             if e.key == pygame.K_ESCAPE:
-                return False
+                if pygame.event.get_grab():
+                    pygame.mouse.set_visible(True)
+                    pygame.event.set_grab(False)
+                else:
+                    return False
                 
             if e.key == pygame.K_a:
                 pxdir = -1
@@ -234,11 +238,18 @@ def controls():
 
             if e.key == pygame.K_LSHIFT:
                 speed = 1
+
+        if e.type == pygame.MOUSEBUTTONDOWN:
+            pygame.mouse.set_visible(False)
+            pygame.event.set_grab(True)
     
         if e.type == pygame.MOUSEMOTION:
             mx, my = pygame.mouse.get_rel()
             
             viewangle += mx
+
+        if e.type == pygame.QUIT:
+            return False
     
     newx = math.cos(math.radians(viewangle)) * pydir * speed - math.sin(math.radians(viewangle)) * pxdir * speed + px
     newy = math.sin(math.radians(viewangle)) * pydir * speed + math.cos(math.radians(viewangle)) * pxdir * speed + py

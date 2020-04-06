@@ -16,6 +16,7 @@ FULLSCREEN = 0
 
 pygame.display.init()
 window = pygame.display.set_mode((WIN_W, WIN_H), FULLSCREEN)
+pygame.display.set_caption('raycaster')
 
 screen = pygame.Surface((SCR_W, SCR_H))
 
@@ -243,9 +244,8 @@ def controls():
             pygame.mouse.set_visible(False)
             pygame.event.set_grab(True)
     
-        if e.type == pygame.MOUSEMOTION:
+        if e.type == pygame.MOUSEMOTION and pygame.event.get_grab():
             mx, my = pygame.mouse.get_rel()
-            
             viewangle += mx
 
         if e.type == pygame.QUIT:

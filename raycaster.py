@@ -1,8 +1,8 @@
 import math
 import pygame
 
-WIN_W = 1280
-WIN_H = 720
+WIN_W = 640#1280
+WIN_H = 360#720
 
 SCR_W = 320
 SCR_H = 180
@@ -152,9 +152,9 @@ def renderRaycasting():
 
     for obj in objects:
             objtype, xpos, ypos = obj
-            print(objtype, xpos, ypos)
+            #print(objtype, xpos, ypos)
             pygame.draw.rect(screen, (255, 255, 255), (xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
-            print((xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
+            #print((xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
 
 def renderResult():
     strip = pygame.Surface((1, WALLSIZE))
@@ -185,10 +185,11 @@ def renderResult():
 
     for obj in objects:
         objtype, xpos, ypos = obj
-        localX=xpos-px
-        localY=ypos-py
-        distance=math.sqrt(localX*localX+localY*localY)
-        localAngle=math.atan2(localX,localY)-math.radians(viewangle)
+        localX=xpos-px +0.5*WALLSIZE
+        localY=ypos-py +0.5*WALLSIZE
+        distance=math.sqrt(localX*localX + localY*localY)
+        localAngle=math.atan2(localY,localX)-math.radians(viewangle)
+        localAngle=(localAngle+math.pi)%(math.pi*2.0)-math.pi
         x=( localAngle+math.radians(FOV/2) )/math.radians(FOV) * SCR_W;
         pygame.draw.line(screen, (250, 0, 0), (x,0), (x,SCR_H))
 

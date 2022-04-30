@@ -65,6 +65,10 @@ TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load(
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
             }
 
+objects = [('plant', 9 * WALLSIZE, 1 * WALLSIZE),
+           ('plant', 1 * WALLSIZE, 8 * WALLSIZE),
+           ]
+
 rays = []
 
 
@@ -146,6 +150,11 @@ def renderRaycasting():
         
         pygame.draw.line(screen, (0, 255, 0), p1, p2)
 
+    for obj in objects:
+            objtype, xpos, ypos = obj
+            print(objtype, xpos, ypos)
+            pygame.draw.rect(screen, (255, 255, 255), (xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
+            print((xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
 
 def renderResult():
     strip = pygame.Surface((1, WALLSIZE))
@@ -173,6 +182,28 @@ def renderResult():
                 pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
             else:
                 pygame.draw.line(screen, WALLCOLORS[t], top, bottom)            
+
+    for obj in objects:
+        objtype, xpos, ypos = obj
+        localX=xpos-px
+        localY=ypos-py
+        distance=math.sqrt(localX*localX+localY*localY)
+        localAngle=math.atan2(localX,localY)-math.radians(viewangle)
+        x=( localAngle+math.radians(FOV/2) )/math.radians(FOV) * SCR_W;
+        pygame.draw.line(screen, (250, 0, 0), (x,0), (x,SCR_H))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def render():

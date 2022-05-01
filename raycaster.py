@@ -70,7 +70,11 @@ TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load(
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
             'plant': pygame.image.load('textures/plant.png'),
             'sign-sbo': pygame.image.load('textures/sign-sbo.png'),
-            'fountain': (pygame.image.load('textures/fountain1.png'), pygame.image.load('textures/fountain2.png'), pygame.image.load('textures/fountain3.png'))
+            'fountain': (pygame.image.load('textures/fountain1.png'),
+                         pygame.image.load('textures/fountain2.png'),
+                         pygame.image.load('textures/fountain3.png'),
+                         pygame.image.load('textures/fountain4.png'),
+                         )
             }
 
 objects = []

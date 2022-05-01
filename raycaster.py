@@ -234,9 +234,11 @@ def renderResult():
         for i, xx in enumerate(range(fr, to)):
             if xx < 0 or xx >= SCR_W:
                 continue
-            
-            if distance < rays[int(xx)][1]:
-                
+
+            angle, steps, t, bright, newx, newy = rays[int(xx)]
+            depth = steps * math.cos(math.radians(angle - viewangle))
+
+            if distance < depth:
                 top = (xx, SCR_H / 2 - lineheight / 2)
                 bottom = (xx, SCR_H / 2 + lineheight / 2)
                 

@@ -203,11 +203,11 @@ def renderResult():
         objtype, xpos, ypos = obj
         localX=xpos-px +0.5*WALLSIZE
         localY=ypos-py +0.5*WALLSIZE
-        distance=math.sqrt(localX*localX + localY*localY)
         localAngle=math.atan2(localY,localX)-math.radians(viewangle)
-        localAngle=(localAngle+math.pi)%(math.pi*2.0)-math.pi
-        x=( localAngle+math.radians(FOV/2) )/math.radians(FOV) * SCR_W
-        
+        myx = math.tan(localAngle) / math.tan(math.radians(FOV/2))
+        x = (myx * 0.5 + 0.5) * SCR_W
+        distance=math.sqrt(localX*localX + localY*localY) * math.cos(localAngle)
+
         objectsSorted.append((distance, objtype, x))
         
     objectsSorted.sort(reverse=True)

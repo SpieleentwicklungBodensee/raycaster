@@ -41,7 +41,7 @@ speed = 1
 level = ['####################',
          '#          o#      #',
          '#  XX XX    # #### #',
-         '# X     X   # #o   #',
+         '# X     X   # #s   #',
          '# X  X  X   # X##X #',
          '#  X   X    #      #',
          '#   X X     ##### ##',
@@ -49,7 +49,7 @@ level = ['####################',
          '# oo          X   o#',
          '# ##################',
          '# #      o       oo#',
-         '# #   o       oo   #',
+         '# #   o       oo  s#',
          '#        o   oooo  #',
          '####################',
         ]
@@ -68,6 +68,7 @@ BRIGHTCOLORS = {'#': (80, 80, 80),
 TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load('textures/ironwall-dark.png')),
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
             'plant': pygame.image.load('textures/plant.png'),
+            'sign-sbo': pygame.image.load('textures/sign-sbo.png'),
             }
 
 objects = []
@@ -76,7 +77,9 @@ for y in range(LEV_H):
     for x in range(LEV_W):
         if level[y][x] == 'o':
             objects.append(('plant', x * WALLSIZE, y * WALLSIZE))
-
+        if level[y][x] == 's':
+            objects.append(('sign-sbo', x * WALLSIZE, y * WALLSIZE))
+            
 rays = []
 
 

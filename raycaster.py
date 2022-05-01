@@ -1,4 +1,5 @@
 import math
+import time
 import pygame
 
 WIN_W = 1280
@@ -39,14 +40,18 @@ speed = 1
 
 
 level = ['####################',
-         '#           #      #',
+         '#          o#      #',
          '#  XX XX    # #### #',
-         '# X     X   # #    #',
+         '# X     X   # #s   #',
          '# X  X  X   # X##X #',
          '#  X   X    #      #',
          '#   X X     ##### ##',
          '#    X      X   X  #',
-         '#             X    #',
+         '# oo          X   o#',
+         '# ##################',
+         '# #      o       oo#',
+         '# #   f       oo  s#',
+         '#        o   oooo  #',
          '####################',
         ]
          
@@ -63,8 +68,26 @@ BRIGHTCOLORS = {'#': (80, 80, 80),
                 
 TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load('textures/ironwall-dark.png')),
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
+            'plant': pygame.image.load('textures/plant.png'),
+            'sign-sbo': pygame.image.load('textures/sign-sbo.png'),
+            'fountain': (pygame.image.load('textures/fountain1.png'),
+                         pygame.image.load('textures/fountain2.png'),
+                         pygame.image.load('textures/fountain3.png'),
+                         pygame.image.load('textures/fountain4.png'),
+                         )
             }
 
+objects = []
+
+for y in range(LEV_H):
+    for x in range(LEV_W):
+        if level[y][x] == 'o':
+            objects.append(('plant', x * WALLSIZE, y * WALLSIZE))
+        if level[y][x] == 's':
+            objects.append(('sign-sbo', x * WALLSIZE, y * WALLSIZE))
+        if level[y][x] == 'f':
+            objects.append(('fountain', x * WALLSIZE, y * WALLSIZE))
+            
 rays = []
 
 
@@ -133,6 +156,9 @@ def renderRaycasting():
     for y in range(LEV_H):
         for x in range(LEV_W):
             t = level[y][x]
+            if t not in WALLCOLORS.keys():
+                continue
+                
             tilerect = (x * TILESIZE, y * TILESIZE, TILESIZE -1, TILESIZE -1)
             
             if t != ' ':
@@ -146,9 +172,14 @@ def renderRaycasting():
         
         pygame.draw.line(screen, (0, 255, 0), p1, p2)
 
+    for obj in objects:
+            objtype, xpos, ypos = obj
+            #print(objtype, xpos, ypos)
+            pygame.draw.rect(screen, (255, 255, 255), (xpos // TILESIZE, ypos // TILESIZE, TILESIZE -1, TILESIZE -1))
+            #print((xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
 
 def renderResult():
-    strip = pygame.Surface((1, WALLSIZE))
+    strip = pygame.Surface((1, WALLSIZE), flags=pygame.SRCALPHA)
     
     for x in range(SCR_W):
         
@@ -172,7 +203,64 @@ def renderResult():
             if bright:
                 pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
             else:
-                pygame.draw.line(screen, WALLCOLORS[t], top, bottom)            
+                pygame.draw.line(screen, WALLCOLORS[t], top, bottom)
+                
+    objectsSorted = []          
+
+    for obj in objects:
+        objtype, xpos, ypos = obj
+        localX=xpos-px +0.5*WALLSIZE
+        localY=ypos-py +0.5*WALLSIZE
+        localAngle=math.atan2(localY,localX)-math.radians(viewangle)
+        myx = math.tan(localAngle) / math.tan(math.radians(FOV/2))
+        x = (myx * 0.5 + 0.5) * SCR_W
+        distance=math.sqrt(localX*localX + localY*localY) * math.cos(localAngle)
+
+        if distance > 0.5:
+            objectsSorted.append((distance, objtype, x))
+        
+    objectsSorted.sort(reverse=True)
+        
+    for distance, objtype, x in objectsSorted:
+        lineheight = WALLSIZE / distance * default_lineheight
+        texture = TEXTURES[objtype]
+        
+        if type(texture) is tuple:
+            texture = texture[int(time.time() * 10) % len(texture)]
+        
+        fr = int(x - lineheight/2)
+        to = int(x + lineheight/2)
+        
+        for i, xx in enumerate(range(fr, to)):
+            if xx < 0 or xx >= SCR_W:
+                continue
+
+            angle, steps, t, bright, newx, newy = rays[int(xx)]
+            depth = steps * math.cos(math.radians(angle - viewangle))
+
+            if distance < depth:
+                top = (xx, SCR_H / 2 - lineheight / 2)
+                bottom = (xx, SCR_H / 2 + lineheight / 2)
+                
+                tex_x = int(i * (WALLSIZE / lineheight))
+
+                strip.fill((0, 0, 0, 0))
+                strip.blit(texture, (-tex_x, 0))
+                
+                scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
+                screen.blit(scaledstrip, (xx, int(top[1])))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def render():

@@ -216,7 +216,8 @@ def renderResult():
         x = (myx * 0.5 + 0.5) * SCR_W
         distance=math.sqrt(localX*localX + localY*localY) * math.cos(localAngle)
 
-        objectsSorted.append((distance, objtype, x))
+        if distance > 0.5:
+            objectsSorted.append((distance, objtype, x))
         
     objectsSorted.sort(reverse=True)
         
@@ -227,7 +228,10 @@ def renderResult():
         if type(texture) is tuple:
             texture = texture[int(time.time() * 10) % len(texture)]
         
-        for i, xx in enumerate(range(int(x - lineheight/2), int(x + lineheight/2))):
+        fr = int(x - lineheight/2)
+        to = int(x + lineheight/2)
+        
+        for i, xx in enumerate(range(fr, to)):
             if xx < 0 or xx >= SCR_W:
                 continue
             

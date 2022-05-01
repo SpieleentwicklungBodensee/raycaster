@@ -175,7 +175,7 @@ def renderRaycasting():
     for obj in objects:
             objtype, xpos, ypos = obj
             #print(objtype, xpos, ypos)
-            pygame.draw.rect(screen, (255, 255, 255), (xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
+            pygame.draw.rect(screen, (255, 255, 255), (xpos // TILESIZE, ypos // TILESIZE, TILESIZE -1, TILESIZE -1))
             #print((xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
 
 def renderResult():

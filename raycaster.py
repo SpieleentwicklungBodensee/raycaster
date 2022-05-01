@@ -1,4 +1,5 @@
 import math
+import time
 import pygame
 
 WIN_W = 1280
@@ -49,7 +50,7 @@ level = ['####################',
          '# oo          X   o#',
          '# ##################',
          '# #      o       oo#',
-         '# #   o       oo  s#',
+         '# #   f       oo  s#',
          '#        o   oooo  #',
          '####################',
         ]
@@ -69,6 +70,7 @@ TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load(
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
             'plant': pygame.image.load('textures/plant.png'),
             'sign-sbo': pygame.image.load('textures/sign-sbo.png'),
+            'fountain': (pygame.image.load('textures/fountain1.png'), pygame.image.load('textures/fountain2.png'), pygame.image.load('textures/fountain3.png'))
             }
 
 objects = []
@@ -79,6 +81,8 @@ for y in range(LEV_H):
             objects.append(('plant', x * WALLSIZE, y * WALLSIZE))
         if level[y][x] == 's':
             objects.append(('sign-sbo', x * WALLSIZE, y * WALLSIZE))
+        if level[y][x] == 'f':
+            objects.append(('fountain', x * WALLSIZE, y * WALLSIZE))
             
 rays = []
 
@@ -215,6 +219,9 @@ def renderResult():
     for distance, objtype, x in objectsSorted:
         lineheight = WALLSIZE / distance * default_lineheight
         texture = TEXTURES[objtype]
+        
+        if type(texture) is tuple:
+            texture = texture[int(time.time() * 10) % len(texture)]
         
         for i, xx in enumerate(range(int(x - lineheight/2), int(x + lineheight/2))):
             if xx < 0 or xx >= SCR_W:

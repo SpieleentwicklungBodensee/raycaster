@@ -15,6 +15,8 @@ TILESIZE = 8   # size of a wall tile when rendering map
 FULLSCREEN = pygame.FULLSCREEN
 FULLSCREEN = 0
 
+UPDATE_INTERVAL = 1000 / 100 # updates per second
+
 pygame.display.init()
 window = pygame.display.set_mode((WIN_W, WIN_H), FULLSCREEN)
 pygame.display.set_caption('raycaster')
@@ -351,12 +353,22 @@ def controls():
 
 
 running = True
+clock = pygame.time.Clock()
+move_timer = 0
 
 while running:
+    dt = clock.get_time()
+    
+    move_timer += dt
+    while move_timer >= UPDATE_INTERVAL:
+        running = controls()
+        
+        move_timer -= UPDATE_INTERVAL
+    
     raycast()
     render()
-    running = controls()
     
+    clock.tick()
     
 pygame.quit()
 

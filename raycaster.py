@@ -287,18 +287,18 @@ def renderFloor():
     scr_h_half=int(SCR_H/2)
     for y in range(scr_h_half):
         # floor local
-        y0=350-300*(y/scr_h_half) # todo
-        y1=y0
-        x0=-150+50*(y/scr_h_half) # todo
-        x1=-x0
+        x0=350-300*(y/scr_h_half) # todo
+        x1=x0
+        y0=-150+50*(y/scr_h_half) # todo
+        y1=-y0
 
         # floor global
-        x0,y0=rotate(x0,y0,-viewangle)
-        x1,y1=rotate(x1,y1,-viewangle)
-        x0+=py
-        y0+=px
-        x1+=py
-        y1+=px
+        x0,y0=rotate(x0,y0,viewangle)
+        x1,y1=rotate(x1,y1,viewangle)
+        x0+=px
+        y0+=py
+        x1+=px
+        y1+=py
 
         for x in range(SCR_W):
             # floor global interpolated

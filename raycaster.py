@@ -378,6 +378,9 @@ while running:
     while move_timer >= UPDATE_INTERVAL:
         running = controls()
         
+        if not running:
+            break
+        
         move_timer -= UPDATE_INTERVAL
     
     raycast()

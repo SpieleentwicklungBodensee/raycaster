@@ -98,7 +98,7 @@ rays = []
 
 def getFloorPixel(x, y):
     tex = TEXTURES['.']
-    return tex.get_at((x // WALLSIZE, y // WALLSIZE))
+    return tex.get_at((int(x) % WALLSIZE, int(y) % WALLSIZE))
 
 
 def raycast():
@@ -260,7 +260,39 @@ def renderResult():
                 scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
                 screen.blit(scaledstrip, (xx, int(top[1])))
 
+def rotate(x, y, r):
+    r=math.radians(r)
+    l=math.sqrt(x*x + y*y);
+    a=math.atan2(y,x);
+    x=l*math.cos(a+r);
+    y=l*math.sin(a+r);
+    return x,y
 
+def renderFloor():
+    scr_h_half=int(SCR_H/2)
+    for y in range(scr_h_half):
+        # floor local
+        y0=350-300*(y/scr_h_half) # todo
+        y1=y0
+        x0=-150+50*(y/scr_h_half) # todo
+        x1=-x0
+
+        # floor global
+        x0,y0=rotate(x0,y0,-viewangle)
+        x1,y1=rotate(x1,y1,-viewangle)
+        x0+=py
+        y0+=px
+        x1+=py
+        y1+=px
+
+        for x in range(SCR_W):
+            # floor global interpolated
+            rate=x/SCR_W
+            xi=x0+(x1-x0)*rate
+            yi=y0+(y1-y0)*rate
+
+            c=getFloorPixel(xi,yi)
+            screen.set_at((x,scr_h_half+y),c)
 
 
 
@@ -275,14 +307,9 @@ def renderResult():
 
 def render():
     screen.fill((128, 168, 192))
-    screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
 
-    # floor
-    scr_h_half=int(SCR_H/2)
-    for y in range(scr_h_half):
-        for x in range(SCR_W):
-            c=(0,int(random()*256),0)
-            screen.set_at((x,scr_h_half+y),c)
+    #screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
+    renderFloor()
     
     renderResult()
 

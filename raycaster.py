@@ -1,6 +1,7 @@
 import math
 import time
 import pygame
+from random import random
 
 WIN_W = 1280
 WIN_H = 720
@@ -268,6 +269,13 @@ def renderResult():
 def render():
     screen.fill((128, 168, 192))
     screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
+
+    # floor
+    scr_h_half=int(SCR_H/2)
+    for y in range(scr_h_half):
+        for x in range(SCR_W):
+            c=(0,int(random()*256),0)
+            screen.set_at((x,scr_h_half+y),c)
     
     renderResult()
 

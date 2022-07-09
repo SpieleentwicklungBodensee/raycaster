@@ -71,7 +71,7 @@ BRIGHTCOLORS = {'#': (80, 80, 80),
                 
 TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load('textures/ironwall-dark.png')),
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
-            '.': pygame.image.load('textures/floor.png'),
+            ' ': pygame.image.load('textures/floor.png'),
             'plant': pygame.image.load('textures/plant.png'),
             'sign-sbo': pygame.image.load('textures/sign-sbo.png'),
             'fountain': (pygame.image.load('textures/fountain1.png'),
@@ -97,8 +97,23 @@ rays = []
 
 
 def getFloorPixel(x, y):
-    tex = TEXTURES['.']
-    return tex.get_at((int(x) % WALLSIZE, int(y) % WALLSIZE))
+    lx, ly = int(x // WALLSIZE), int(y // WALLSIZE)
+    
+    if ly >= LEV_H or lx >= LEV_W or ly < 0 or lx < 0:
+        return (0, 0, 0)
+        
+    tile = level[ly][lx]
+    
+    if tile in TEXTURES:
+        tex = TEXTURES[tile]
+        
+        if type(tex) is tuple:
+            tex = tex[0]
+
+        return tex.get_at((int(x) % WALLSIZE, int(y) % WALLSIZE))
+
+    else:
+        return (255, 0, 255)
 
 
 def raycast():

@@ -98,7 +98,7 @@ rays = []
 
 def getFloorPixel(x, y):
     tex = TEXTURES['.']
-    return text.get_at((x // WALLSIZE), (y // WALLSIZE))
+    return tex.get_at((x // WALLSIZE, y // WALLSIZE))
 
 
 def raycast():

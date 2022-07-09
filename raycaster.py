@@ -71,6 +71,7 @@ BRIGHTCOLORS = {'#': (80, 80, 80),
                 
 TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load('textures/ironwall-dark.png')),
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
+            '.': pygame.image.load('textures/floor.png',
             'plant': pygame.image.load('textures/plant.png'),
             'sign-sbo': pygame.image.load('textures/sign-sbo.png'),
             'fountain': (pygame.image.load('textures/fountain1.png'),
@@ -92,6 +93,12 @@ for y in range(LEV_H):
             objects.append(('fountain', x * WALLSIZE, y * WALLSIZE))
             
 rays = []
+
+
+
+def getFloorPixel(x, y):
+    tex = TEXTURES['.']
+    return text.get_at((x // WALLSIZE), (y // WALLSIZE))
 
 
 def raycast():

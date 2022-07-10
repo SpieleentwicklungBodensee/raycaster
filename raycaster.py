@@ -29,7 +29,7 @@ pygame.event.set_grab(True)
 
 SHOW_MAP = True
 TEXTURES_ENABLED = True
-
+render_walls = 1
 
 FOV = 80.0
 
@@ -37,6 +37,7 @@ px = 4 * WALLSIZE
 py = 1.5 * WALLSIZE
 
 viewangle = 0
+viewangle_y = 0
 pxdir = 0
 pydir = 0
 speed = 1
@@ -284,21 +285,46 @@ def rotate(x, y, r):
     return x,y
 
 def renderFloor():
+    global viewangle_y
     scr_h_half=int(SCR_H/2)
     for y in range(scr_h_half):
         # floor local
-        x0=350-300*(y/scr_h_half) # todo
-        x1=x0
-        y0=-150+50*(y/scr_h_half) # todo
-        y1=-y0
+        fdist = SCR_H
+        tmax = 10000000
+
+        fa = math.degrees(math.atan2(y, fdist))
+        m1  = math.atan(math.radians(fa + viewangle_y))
+        m2 = math.atan(math.radians(fa))
+
+        if m1 == 0:
+            di = tmax
+        else:
+            di = 1 / m1
+
+        if m2== 0:
+            di2 = tmax
+        else:
+            di2 =  m2
+
+        x0 = di*SCR_H
+        x1 = x0
+
+        y0 = - 1/di2*SCR_W/2
+        y1 = - y0
 
         # floor global
-        x0,y0=rotate(x0,y0,viewangle)
-        x1,y1=rotate(x1,y1,viewangle)
-        x0+=px
-        y0+=py
-        x1+=px
-        y1+=py
+        x0,y0 = rotate(x0,y0,viewangle)
+        x1,y1 = rotate(x1,y1,viewangle)
+
+        x0 /= 8
+        x1 /= 8
+        y0 /= 8
+        y1 /= 8
+
+        x0 += px
+        y0 += py
+        x1 += px
+        y1 += py
 
         for x in range(SCR_W):
             # floor global interpolated
@@ -307,26 +333,17 @@ def renderFloor():
             yi=y0+(y1-y0)*rate
 
             c=getFloorPixel(xi,yi)
-            screen.set_at((x,scr_h_half+y),c)
-
-
-
-
-
-
-
-
-
-
+            screen.set_at((x,y+scr_h_half),c)
 
 
 def render():
+    global render_walls
     screen.fill((128, 168, 192))
 
     #screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
     renderFloor()
-    
-    renderResult()
+    if render_walls:
+        renderResult()
 
     if SHOW_MAP:
         renderRaycasting()        
@@ -335,7 +352,7 @@ def render():
     pygame.display.flip()
 
 def controls():
-    global viewangle, pxdir, pydir, px, py, speed, SHOW_MAP, TEXTURES_ENABLED
+    global viewangle, pxdir, pydir, px, py, speed, SHOW_MAP, TEXTURES_ENABLED, render_walls, viewangle_y
 
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
@@ -360,7 +377,8 @@ def controls():
 
             if e.key == pygame.K_LSHIFT:
                 speed = 2
-                
+
+
             if e.key == pygame.K_F11:
                 TEXTURES_ENABLED = not TEXTURES_ENABLED
                 
@@ -384,6 +402,12 @@ def controls():
                 if pydir < 0:
                     pydir = 0
 
+            if e.key == pygame.K_p:
+                if render_walls == 0:
+                    render_walls = 1
+                else:
+                    render_walls = 0
+
             if e.key == pygame.K_LSHIFT:
                 speed = 1
 
@@ -394,6 +418,7 @@ def controls():
         if e.type == pygame.MOUSEMOTION and pygame.event.get_grab():
             mx, my = pygame.mouse.get_rel()
             viewangle += mx
+            #viewangle_y += my/4
 
         if e.type == pygame.QUIT:
             return False

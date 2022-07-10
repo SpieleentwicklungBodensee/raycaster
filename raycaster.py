@@ -328,7 +328,7 @@ def renderFloor():
 
         for x in range(SCR_W):
             # floor global interpolated
-            rate=x/SCR_W
+            rate=(x + 0.5)/SCR_W
             xi=x0+(x1-x0)*rate
             yi=y0+(y1-y0)*rate
 

@@ -58,18 +58,18 @@ level = ['####################',
          '#        o   oooo  #',
          '####################',
         ]
-         
+
 LEV_W = len(level[0])
 LEV_H = len(level)
 
 WALLCOLORS = {'#': (64, 64, 64),
               'X': (96, 64, 32),
               }
-              
+
 BRIGHTCOLORS = {'#': (80, 80, 80),
                 'X': (112, 80, 48),
                 }
-                
+
 TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load('textures/ironwall-dark.png')),
             'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
             ' ': pygame.image.load('textures/floor.png'),
@@ -92,7 +92,7 @@ for y in range(LEV_H):
             objects.append(('sign-sbo', x * WALLSIZE, y * WALLSIZE))
         if level[y][x] == 'f':
             objects.append(('fountain', x * WALLSIZE, y * WALLSIZE))
-            
+
 rays = []
 
 
@@ -102,12 +102,12 @@ def getFloorPixel(x, y):
 
     if ly >= LEV_H or lx >= LEV_W or ly < 0 or lx < 0:
         return (0, 0, 0)
-        
+
     tile = level[ly][lx]
-    
+
     if tile in TEXTURES:
         tex = TEXTURES[tile]
-        
+
         if type(tex) is tuple:
             tex = tex[0]
 
@@ -120,18 +120,18 @@ def getFloorPixel(x, y):
 def raycast():
     global rays
     rays = []
-    
+
     # 0 -> -NEARSIZE_H
     # 160.5 -> 0
     # 320 -> +NEARSIZE_H
 
     NEARSIZE_H = math.tan(math.radians(FOV/2))
-    
+
     for i in range(SCR_W):
-        
+
         n = ((i + 0.5) / SCR_W * 2 -1) * NEARSIZE_H
         a = math.atan(n) + math.radians(viewangle)
-        
+
         found = False
         bright = False
 
@@ -171,12 +171,12 @@ def raycast():
 
         newx = px + dx * l
         newy = py + dy * l
-        
+
         if abs((newx % WALLSIZE) - 32) > abs((newy % WALLSIZE) - 32):
             bright = True
 
         rays.append((math.degrees(a), max(l, 0.5), t, bright, newx, newy))
-        
+
 
 def renderRaycasting():
     for y in range(LEV_H):
@@ -184,18 +184,18 @@ def renderRaycasting():
             t = level[y][x]
             if t not in WALLCOLORS.keys():
                 continue
-                
+
             tilerect = (x * TILESIZE, y * TILESIZE, TILESIZE -1, TILESIZE -1)
-            
+
             if t != ' ':
                 pygame.draw.rect(screen, WALLCOLORS[t], tilerect, 0)
-                
+
     pygame.draw.rect(screen, (255, 0, 0), (int(px / WALLSIZE * TILESIZE), int(py / WALLSIZE * TILESIZE), 2, 2))
-    
+
     for angle, steps, t, bright, newx, newy in rays:
         p1 = (int(px / WALLSIZE * TILESIZE), int(py / WALLSIZE * TILESIZE))
         p2 = (int(math.cos(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[0]), int(math.sin(math.radians(angle)) * steps / WALLSIZE * TILESIZE + p1[1]))
-        
+
         pygame.draw.line(screen, (0, 255, 0), p1, p2)
 
     for obj in objects:
@@ -206,23 +206,23 @@ def renderRaycasting():
 
 def renderResult():
     strip = pygame.Surface((1, WALLSIZE), flags=pygame.SRCALPHA)
-    
+
     for x in range(SCR_W):
-        
+
         angle, steps, t, bright, newx, newy = rays[x]
-        
+
         steps *= math.cos(math.radians(angle - viewangle))
-        
+
         default_lineheight = SCR_H * 1.0
         lineheight = WALLSIZE / steps * default_lineheight
-        
+
         top = (x, SCR_H / 2 - lineheight / 2)
         bottom = (x, SCR_H / 2 + lineheight / 2)
-        
+
         if TEXTURES_ENABLED:
             texture = TEXTURES[t][0 if bright else 1]
             strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
-            
+
             scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
             screen.blit(scaledstrip, (x, int(top[1])))
         else:
@@ -230,8 +230,8 @@ def renderResult():
                 pygame.draw.line(screen, BRIGHTCOLORS[t], top, bottom)
             else:
                 pygame.draw.line(screen, WALLCOLORS[t], top, bottom)
-                
-    objectsSorted = []          
+
+    objectsSorted = []
 
     for obj in objects:
         objtype, xpos, ypos = obj
@@ -244,19 +244,19 @@ def renderResult():
 
         if distance > 0.5:
             objectsSorted.append((distance, objtype, x))
-        
+
     objectsSorted.sort(reverse=True)
-        
+
     for distance, objtype, x in objectsSorted:
         lineheight = WALLSIZE / distance * default_lineheight
         texture = TEXTURES[objtype]
-        
+
         if type(texture) is tuple:
             texture = texture[int(time.time() * 10) % len(texture)]
-        
+
         fr = int(x - lineheight/2)
         to = int(x + lineheight/2)
-        
+
         for i, xx in enumerate(range(fr, to)):
             if xx < 0 or xx >= SCR_W:
                 continue
@@ -267,12 +267,12 @@ def renderResult():
             if distance < depth:
                 top = (xx, SCR_H / 2 - lineheight / 2)
                 bottom = (xx, SCR_H / 2 + lineheight / 2)
-                
+
                 tex_x = int(i * (WALLSIZE / lineheight))
 
                 strip.fill((0, 0, 0, 0))
                 strip.blit(texture, (-tex_x, 0))
-                
+
                 scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
                 screen.blit(scaledstrip, (xx, int(top[1])))
 
@@ -324,7 +324,7 @@ def render():
         renderResult()
 
     if SHOW_MAP:
-        renderRaycasting()        
+        renderRaycasting()
 
     pygame.transform.scale(screen, (WIN_W, WIN_H), window)
     pygame.display.flip()
@@ -340,16 +340,16 @@ def controls():
                     pygame.event.set_grab(False)
                 else:
                     return False
-                
+
             if e.key == pygame.K_a:
                 pxdir = -1
-                
+
             if e.key == pygame.K_d:
                 pxdir = 1
-                
+
             if e.key == pygame.K_w:
                 pydir = 1
-                
+
             if e.key == pygame.K_s:
                 pydir = -1
 
@@ -359,7 +359,7 @@ def controls():
 
             if e.key == pygame.K_F11:
                 TEXTURES_ENABLED = not TEXTURES_ENABLED
-                
+
             if e.key == pygame.K_F12:
                 SHOW_MAP = not SHOW_MAP
 
@@ -367,15 +367,15 @@ def controls():
             if e.key == pygame.K_a:
                 if pxdir < 0:
                     pxdir = 0
-                
+
             if e.key == pygame.K_d:
                 if pxdir > 0:
                     pxdir = 0
-                    
+
             if e.key == pygame.K_w:
                 if pydir > 0:
                     pydir = 0
-                
+
             if e.key == pygame.K_s:
                 if pydir < 0:
                     pydir = 0
@@ -392,7 +392,7 @@ def controls():
         if e.type == pygame.MOUSEBUTTONDOWN:
             pygame.mouse.set_visible(False)
             pygame.event.set_grab(True)
-    
+
         if e.type == pygame.MOUSEMOTION and pygame.event.get_grab():
             mx, my = pygame.mouse.get_rel()
             viewangle += mx
@@ -400,7 +400,7 @@ def controls():
 
         if e.type == pygame.QUIT:
             return False
-    
+
     newx = math.cos(math.radians(viewangle)) * pydir * speed - math.sin(math.radians(viewangle)) * pxdir * speed + px
     newy = math.sin(math.radians(viewangle)) * pydir * speed + math.cos(math.radians(viewangle)) * pxdir * speed + py
 
@@ -408,7 +408,7 @@ def controls():
         px = newx
     if level[int(newy/WALLSIZE)][int(px/WALLSIZE)] == " ":
         py = newy
-                
+
     return True
 
 
@@ -418,21 +418,21 @@ move_timer = 0
 
 while running:
     dt = clock.get_time()
-    
+
     move_timer += dt
     while move_timer >= UPDATE_INTERVAL:
         running = controls()
-        
+
         if not running:
             break
-        
+
         move_timer -= UPDATE_INTERVAL
-    
+
     raycast()
     render()
-    
+
     clock.tick()
-    
+
 pygame.quit()
 
 

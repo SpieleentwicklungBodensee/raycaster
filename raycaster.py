@@ -224,7 +224,7 @@ def renderResult():
             texture = TEXTURES[t][0 if bright else 1]
             strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
 
-            scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
+            scaledstrip = pygame.transform.scale(strip, (1, int(lineheight) + 1))
             screen.blit(scaledstrip, (x, int(top[1])))
         else:
             if bright:

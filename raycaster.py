@@ -326,7 +326,8 @@ def render():
     if SHOW_MAP:
         renderRaycasting()
 
-    pygame.transform.scale(screen, (WIN_W, WIN_H), window)
+    win = pygame.transform.scale(screen, (WIN_W, WIN_H))
+    window.blit(win, (0, 0))
     pygame.display.flip()
 
 def controls():

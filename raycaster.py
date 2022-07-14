@@ -276,20 +276,18 @@ def renderResult():
                 scaledstrip = pygame.transform.scale(strip, (1, int(lineheight)))
                 screen.blit(scaledstrip, (xx, int(top[1])))
 
-def rotate(x, y, r):
-    r=math.radians(r)
-    l=math.sqrt(x*x + y*y);
-    a=math.atan2(y,x);
-    x=l*math.cos(a+r);
-    y=l*math.sin(a+r);
-    return x,y
 
 def renderFloor():
     NEARSIZE_H = math.tan(math.radians(FOV/2))
+
+    r = math.radians(viewangle)
+    rs = math.sin(r)
+    rc = math.cos(r)
+
     scr_h_half=int(SCR_H/2)
     for y in range(scr_h_half):
         ty = (y + 0.5) / scr_h_half
-        d = 1.0 / ty
+        d = WALLSIZE / ty
 
         x0 = d
         y0 = -NEARSIZE_H * d
@@ -298,13 +296,8 @@ def renderFloor():
         y1 = NEARSIZE_H * d
 
         # floor global
-        x0,y0 = rotate(x0,y0,viewangle)
-        x1,y1 = rotate(x1,y1,viewangle)
-
-        x0 *= WALLSIZE
-        x1 *= WALLSIZE
-        y0 *= WALLSIZE
-        y1 *= WALLSIZE
+        x0,y0 = rc*x0 - rs*y0, rs*x0 + rc*y0
+        x1,y1 = rc*x1 - rs*y1, rs*x1 + rc*y1
 
         x0 += px
         y0 += py

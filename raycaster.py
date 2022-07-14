@@ -23,6 +23,7 @@ window = pygame.display.set_mode((WIN_W, WIN_H), FULLSCREEN)
 pygame.display.set_caption('raycaster')
 
 screen = pygame.Surface((SCR_W, SCR_H))
+tempwin = pygame.Surface((WIN_W, WIN_H))
 
 pygame.mouse.set_visible(False)
 pygame.event.set_grab(True)
@@ -286,9 +287,9 @@ def renderFloor():
 
     scr_h_half=int(SCR_H/2)
     for y in range(scr_h_half):
+
         ty = (y + 0.5) / scr_h_half
         d = WALLSIZE / ty
-
         x0 = d
         y0 = -NEARSIZE_H * d
 
@@ -326,8 +327,8 @@ def render():
     if SHOW_MAP:
         renderRaycasting()
 
-    win = pygame.transform.scale(screen, (WIN_W, WIN_H))
-    window.blit(win, (0, 0))
+    pygame.transform.scale(screen, (WIN_W, WIN_H), tempwin)
+    window.blit(tempwin, (0, 0))
     pygame.display.flip()
 
 def controls():
@@ -409,8 +410,8 @@ def controls():
         px = newx
     if level[int(newy/WALLSIZE)][int(px/WALLSIZE)] == " ":
         py = newy
-
     return True
+
 
 
 running = True
@@ -435,5 +436,6 @@ while running:
     clock.tick()
 
 pygame.quit()
+
 
 

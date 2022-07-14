@@ -98,8 +98,8 @@ rays = []
 
 
 def getFloorPixel(x, y):
-    lx, ly = int(x // WALLSIZE), int(y // WALLSIZE)
-    
+    lx, ly = int(x / WALLSIZE), int(y / WALLSIZE)
+
     if ly >= LEV_H or lx >= LEV_W or ly < 0 or lx < 0:
         return (0, 0, 0)
         

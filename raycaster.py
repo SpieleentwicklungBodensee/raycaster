@@ -285,41 +285,26 @@ def rotate(x, y, r):
     return x,y
 
 def renderFloor():
-    global viewangle_y
+    NEARSIZE_H = math.tan(math.radians(FOV/2))
     scr_h_half=int(SCR_H/2)
     for y in range(scr_h_half):
-        # floor local
-        fdist = SCR_H
-        tmax = 10000000
+        ty = (y + 0.5) / scr_h_half
+        d = 1.0 / ty
 
-        fa = math.degrees(math.atan2(y, fdist))
-        m1  = math.atan(math.radians(fa + viewangle_y))
-        m2 = math.atan(math.radians(fa))
+        x0 = d
+        y0 = -NEARSIZE_H * d
 
-        if m1 == 0:
-            di = tmax
-        else:
-            di = 1 / m1
-
-        if m2== 0:
-            di2 = tmax
-        else:
-            di2 =  m2
-
-        x0 = di*SCR_H
-        x1 = x0
-
-        y0 = - 1/di2*SCR_W/2
-        y1 = - y0
+        x1 = d
+        y1 = NEARSIZE_H * d
 
         # floor global
         x0,y0 = rotate(x0,y0,viewangle)
         x1,y1 = rotate(x1,y1,viewangle)
 
-        x0 /= 8
-        x1 /= 8
-        y0 /= 8
-        y1 /= 8
+        x0 *= WALLSIZE
+        x1 *= WALLSIZE
+        y0 *= WALLSIZE
+        y1 *= WALLSIZE
 
         x0 += px
         y0 += py

@@ -297,13 +297,8 @@ def renderFloor():
         y1 = NEARSIZE_H * d
 
         # floor global
-        x0,y0 = rc*x0 - rs*y0, rs*x0 + rc*y0
-        x1,y1 = rc*x1 - rs*y1, rs*x1 + rc*y1
-
-        x0 += px
-        y0 += py
-        x1 += px
-        y1 += py
+        x0,y0 = rc*x0 - rs*y0 + px, rs*x0 + rc*y0 + py
+        x1,y1 = rc*x1 - rs*y1 + px, rs*x1 + rc*y1 + py
 
         for x in range(SCR_W):
             # floor global interpolated
@@ -314,6 +309,13 @@ def renderFloor():
             c=getFloorPixel(xi,yi)
             screen.set_at((x,y+scr_h_half),c)
 
+try:
+    import fastfloor
+    floorRenderer = fastfloor.FloorRenderer(screen, WALLSIZE, FOV, level, TEXTURES)
+    def renderFloor():
+        floorRenderer.renderFloor(px, py, viewangle)
+except ImportError:
+    pass
 
 def render():
     global render_walls
@@ -417,6 +419,7 @@ def controls():
 running = True
 clock = pygame.time.Clock()
 move_timer = 0
+fpsTime = 0
 
 while running:
     dt = clock.get_time()
@@ -432,6 +435,11 @@ while running:
 
     raycast()
     render()
+
+    fpsTime += dt
+    while fpsTime >= 1000:
+        pygame.display.set_caption('raycaster %i fps' % clock.get_fps())
+        fpsTime = 0
 
     clock.tick()
 

@@ -2,7 +2,8 @@ import pygame
 import math
 cimport cython
 import numpy as np
-cimport numpy as np
+
+from libc.stdint cimport int32_t, uint32_t
 
 cdef class FloorRenderer:
     cdef object screen
@@ -51,9 +52,10 @@ cdef class FloorRenderer:
     @cython.boundscheck(False)
     @cython.wraparound(False)
     def renderFloor(self, float px, float py, float viewangle):
-        cdef np.ndarray[np.int32_t, ndim=2] level
-        cdef np.ndarray[np.int32_t, ndim=3] TEXTURES
-        cdef np.ndarray[np.uint32_t, ndim=2] screenArray
+        cdef int32_t[:, :] level
+        cdef int32_t[:, :, :] TEXTURES
+        cdef uint32_t[:, :] screenArray
+
         cdef float rs, rc
         cdef int y, scr_h_half
         cdef float ty, d, x0, y0, x1, y1, rate, xi, yi

@@ -13,7 +13,9 @@ Hinweise:
 - mit F10 können die Bodentexturen an- und ausgeschaltet werden
 - mit F11 können die Wandtexturen an- und ausgeschaltet werden
 - mit F12 kann die Minimap (die zudem auch das Raycasting visualisiert) ein- und ausgeblendet werden
-- mit ESCAPE wird das Spiel geschlossen
+- mit ESCAPE kann das Spiel beendet werden:
+    - beim ersten Druck auf ESCAPE wird der Mauszeiger vom Fenster freigegeben; durch einen Klick ins Fenster wird die Maus wieder vom Fenster "gecaptured" und man kann weiterpsielen
+    - beim zweiten Druck auf ESCAPE wird das Spiel schließlich beendet
 
 Was ist Raycasting:
 ===================

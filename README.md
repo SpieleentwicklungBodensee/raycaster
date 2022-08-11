@@ -16,6 +16,10 @@ Hinweise:
 - mit ESCAPE kann das Spiel beendet werden:
     - beim ersten Druck auf ESCAPE wird der Mauszeiger vom Fenster freigegeben; durch einen Klick ins Fenster wird die Maus wieder vom Fenster "gecaptured" und man kann weiterpsielen
     - beim zweiten Druck auf ESCAPE wird das Spiel schließlich beendet
+    
+- das Rendern des Bodens kann mithilfe von Cython beschleunigt werden, hierfür muss der folgende Befehl ausgeführt werden:
+
+``` python3 setup.py build_ext --inplace```
 
 Was ist Raycasting:
 ===================

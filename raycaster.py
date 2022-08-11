@@ -314,6 +314,13 @@ def renderFloor():
             c = getFloorPixel(xi, yi)
             screen.set_at((x, y + scr_h_half), c)
 
+try:
+    import fastfloor
+    floorRenderer = fastfloor.FloorRenderer(screen, WALLSIZE, FOV, level, TEXTURES)
+    def renderFloor():
+        floorRenderer.renderFloor(px, py, viewangle)
+except ImportError:
+    pass
 
 def render():
     global RENDER_WALLS, RENDER_FLOOR
@@ -420,6 +427,7 @@ def controls():
 running = True
 clock = pygame.time.Clock()
 move_timer = 0
+fpsTime = 0
 
 while running:
     dt = clock.get_time()
@@ -435,6 +443,11 @@ while running:
 
     raycast()
     render()
+
+    fpsTime += dt
+    while fpsTime >= 1000:
+        pygame.display.set_caption('raycaster %i fps' % clock.get_fps())
+        fpsTime = 0
 
     clock.tick()
 

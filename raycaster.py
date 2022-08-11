@@ -27,9 +27,10 @@ tempwin = pygame.Surface((WIN_W, WIN_H))
 pygame.mouse.set_visible(False)
 pygame.event.set_grab(True)
 
-SHOW_MAP = True
-TEXTURES_ENABLED = True
+RENDER_MAP = True
+RENDER_TEXTURES = True
 RENDER_WALLS = True
+RENDER_FLOOR = True
 
 FOV = 80.0
 
@@ -177,7 +178,7 @@ def raycast():
         rays.append((math.degrees(a), max(l, 0.5), t, bright, newx, newy))
 
 
-def renderRaycasting():
+def renderMap():
     for y in range(LEV_H):
         for x in range(LEV_W):
             t = level[y][x]
@@ -204,7 +205,7 @@ def renderRaycasting():
             #print((xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
 
 
-def renderResult():
+def renderWalls():
     strip = pygame.Surface((1, WALLSIZE), flags=pygame.SRCALPHA)
 
     for x in range(SCR_W):
@@ -219,7 +220,7 @@ def renderResult():
         top = (x, SCR_H / 2 - lineheight / 2)
         bottom = (x, SCR_H / 2 + lineheight / 2)
 
-        if TEXTURES_ENABLED:
+        if RENDER_TEXTURES:
             texture = TEXTURES[t][0 if bright else 1]
             strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
 
@@ -315,16 +316,19 @@ def renderFloor():
 
 
 def render():
-    global RENDER_WALLS
+    global RENDER_WALLS, RENDER_FLOOR
     screen.fill((128, 168, 192))
 
-    #screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
-    renderFloor()
-    if RENDER_WALLS:
-        renderResult()
+    if RENDER_FLOOR:
+        renderFloor()
+    else:
+        screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
 
-    if SHOW_MAP:
-        renderRaycasting()
+    if RENDER_WALLS:
+        renderWalls()
+
+    if RENDER_MAP:
+        renderMap()
 
     pygame.transform.scale(screen, (WIN_W, WIN_H), tempwin)
     window.blit(tempwin, (0, 0))
@@ -332,7 +336,7 @@ def render():
 
 
 def controls():
-    global viewangle, pxdir, pydir, px, py, speed, SHOW_MAP, TEXTURES_ENABLED, RENDER_WALLS, viewangle_y
+    global viewangle, pxdir, pydir, px, py, speed, RENDER_MAP, RENDER_TEXTURES, RENDER_WALLS, RENDER_FLOOR, viewangle_y
 
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
@@ -358,11 +362,17 @@ def controls():
             if e.key == pygame.K_LSHIFT:
                 speed = 2
 
+            if e.key == pygame.K_F9:
+                RENDER_WALLS = not RENDER_WALLS
+
+            if e.key == pygame.K_F10:
+                RENDER_FLOOR = not RENDER_FLOOR
+
             if e.key == pygame.K_F11:
-                TEXTURES_ENABLED = not TEXTURES_ENABLED
+                RENDER_TEXTURES = not RENDER_TEXTURES
 
             if e.key == pygame.K_F12:
-                SHOW_MAP = not SHOW_MAP
+                RENDER_MAP = not RENDER_MAP
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_a:
@@ -380,9 +390,6 @@ def controls():
             if e.key == pygame.K_s:
                 if pydir < 0:
                     pydir = 0
-
-            if e.key == pygame.K_p:
-                RENDER_WALLS = not RENDER_WALLS
 
             if e.key == pygame.K_LSHIFT:
                 speed = 1

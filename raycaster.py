@@ -1,7 +1,6 @@
 import math
 import time
 import pygame
-from random import random
 
 WIN_W = 1280
 WIN_H = 720
@@ -28,9 +27,10 @@ tempwin = pygame.Surface((WIN_W, WIN_H))
 pygame.mouse.set_visible(False)
 pygame.event.set_grab(True)
 
-SHOW_MAP = True
-TEXTURES_ENABLED = True
-render_walls = 1
+RENDER_MAP = True
+RENDER_TEXTURES = True
+RENDER_WALLS = True
+RENDER_FLOOR = True
 
 FOV = 80.0
 
@@ -130,10 +130,9 @@ def raycast():
 
     for i in range(SCR_W):
 
-        n = ((i + 0.5) / SCR_W * 2 -1) * NEARSIZE_H
+        n = ((i + 0.5) / SCR_W * 2 - 1) * NEARSIZE_H
         a = math.atan(n) + math.radians(viewangle)
 
-        found = False
         bright = False
 
         dx, dy = math.cos(a), math.sin(a)
@@ -179,7 +178,7 @@ def raycast():
         rays.append((math.degrees(a), max(l, 0.5), t, bright, newx, newy))
 
 
-def renderRaycasting():
+def renderMap():
     for y in range(LEV_H):
         for x in range(LEV_W):
             t = level[y][x]
@@ -205,7 +204,8 @@ def renderRaycasting():
             pygame.draw.rect(screen, (255, 255, 255), (xpos // TILESIZE, ypos // TILESIZE, TILESIZE -1, TILESIZE -1))
             #print((xpos / TILESIZE, ypos / TILESIZE, TILESIZE -1, TILESIZE -1))
 
-def renderResult():
+
+def renderWalls():
     strip = pygame.Surface((1, WALLSIZE), flags=pygame.SRCALPHA)
 
     for x in range(SCR_W):
@@ -220,7 +220,7 @@ def renderResult():
         top = (x, SCR_H / 2 - lineheight / 2)
         bottom = (x, SCR_H / 2 + lineheight / 2)
 
-        if TEXTURES_ENABLED:
+        if RENDER_TEXTURES:
             texture = TEXTURES[t][0 if bright else 1]
             strip.blit(texture, (-(int(newx % WALLSIZE)) if not bright else -(int(newy % WALLSIZE)), 0))
 
@@ -236,12 +236,12 @@ def renderResult():
 
     for obj in objects:
         objtype, xpos, ypos = obj
-        localX=xpos-px +0.5*WALLSIZE
-        localY=ypos-py +0.5*WALLSIZE
-        localAngle=math.atan2(localY,localX)-math.radians(viewangle)
-        myx = math.tan(localAngle) / math.tan(math.radians(FOV/2))
+        localX = xpos - px + 0.5 * WALLSIZE
+        localY = ypos - py + 0.5 * WALLSIZE
+        localAngle = math.atan2(localY, localX) - math.radians(viewangle)
+        myx = math.tan(localAngle) / math.tan(math.radians(FOV / 2))
         x = (myx * 0.5 + 0.5) * SCR_W
-        distance=math.sqrt(localX*localX + localY*localY) * math.cos(localAngle)
+        distance = math.sqrt(localX * localX + localY * localY) * math.cos(localAngle)
 
         if distance > 0.5:
             objectsSorted.append((distance, objtype, x))
@@ -255,8 +255,8 @@ def renderResult():
         if type(texture) is tuple:
             texture = texture[int(time.time() * 10) % len(texture)]
 
-        fr = int(x - lineheight/2)
-        to = int(x + lineheight/2)
+        fr = int(x - lineheight / 2)
+        to = int(x + lineheight / 2)
 
         for i, xx in enumerate(range(fr, to)):
             if xx < 0 or xx >= SCR_W:
@@ -279,13 +279,13 @@ def renderResult():
 
 
 def renderFloor():
-    NEARSIZE_H = math.tan(math.radians(FOV/2))
+    NEARSIZE_H = math.tan(math.radians(FOV / 2))
 
     r = math.radians(viewangle)
     rs = math.sin(r)
     rc = math.cos(r)
 
-    scr_h_half=int(SCR_H/2)
+    scr_h_half = int(SCR_H / 2)
     for y in range(scr_h_half):
 
         ty = (y + 0.5) / scr_h_half
@@ -297,17 +297,22 @@ def renderFloor():
         y1 = NEARSIZE_H * d
 
         # floor global
-        x0,y0 = rc*x0 - rs*y0 + px, rs*x0 + rc*y0 + py
-        x1,y1 = rc*x1 - rs*y1 + px, rs*x1 + rc*y1 + py
+        x0, y0 = rc * x0 - rs * y0, rs * x0 + rc * y0
+        x1, y1 = rc * x1 - rs * y1, rs * x1 + rc * y1
+
+        x0 += px
+        y0 += py
+        x1 += px
+        y1 += py
 
         for x in range(SCR_W):
             # floor global interpolated
-            rate=(x + 0.5)/SCR_W
-            xi=x0+(x1-x0)*rate
-            yi=y0+(y1-y0)*rate
+            rate = (x + 0.5) / SCR_W
+            xi = x0 + (x1 - x0) * rate
+            yi = y0 + (y1 - y0) * rate
 
-            c=getFloorPixel(xi,yi)
-            screen.set_at((x,y+scr_h_half),c)
+            c = getFloorPixel(xi, yi)
+            screen.set_at((x, y + scr_h_half), c)
 
 try:
     import fastfloor
@@ -318,23 +323,27 @@ except ImportError:
     pass
 
 def render():
-    global render_walls
+    global RENDER_WALLS, RENDER_FLOOR
     screen.fill((128, 168, 192))
 
-    #screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
-    renderFloor()
-    if render_walls:
-        renderResult()
+    if RENDER_FLOOR:
+        renderFloor()
+    else:
+        screen.fill((64, 128, 64), rect=(0, int(SCR_H / 2), int(SCR_W), int(SCR_H / 2)))
 
-    if SHOW_MAP:
-        renderRaycasting()
+    if RENDER_WALLS:
+        renderWalls()
+
+    if RENDER_MAP:
+        renderMap()
 
     pygame.transform.scale(screen, (WIN_W, WIN_H), tempwin)
     window.blit(tempwin, (0, 0))
     pygame.display.flip()
 
+
 def controls():
-    global viewangle, pxdir, pydir, px, py, speed, SHOW_MAP, TEXTURES_ENABLED, render_walls, viewangle_y
+    global viewangle, pxdir, pydir, px, py, speed, RENDER_MAP, RENDER_TEXTURES, RENDER_WALLS, RENDER_FLOOR, viewangle_y
 
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
@@ -360,12 +369,17 @@ def controls():
             if e.key == pygame.K_LSHIFT:
                 speed = 2
 
+            if e.key == pygame.K_F9:
+                RENDER_WALLS = not RENDER_WALLS
+
+            if e.key == pygame.K_F10:
+                RENDER_FLOOR = not RENDER_FLOOR
 
             if e.key == pygame.K_F11:
-                TEXTURES_ENABLED = not TEXTURES_ENABLED
+                RENDER_TEXTURES = not RENDER_TEXTURES
 
             if e.key == pygame.K_F12:
-                SHOW_MAP = not SHOW_MAP
+                RENDER_MAP = not RENDER_MAP
 
         if e.type == pygame.KEYUP:
             if e.key == pygame.K_a:
@@ -383,12 +397,6 @@ def controls():
             if e.key == pygame.K_s:
                 if pydir < 0:
                     pydir = 0
-
-            if e.key == pygame.K_p:
-                if render_walls == 0:
-                    render_walls = 1
-                else:
-                    render_walls = 0
 
             if e.key == pygame.K_LSHIFT:
                 speed = 1
@@ -408,9 +416,9 @@ def controls():
     newx = math.cos(math.radians(viewangle)) * pydir * speed - math.sin(math.radians(viewangle)) * pxdir * speed + px
     newy = math.sin(math.radians(viewangle)) * pydir * speed + math.cos(math.radians(viewangle)) * pxdir * speed + py
 
-    if level[int(py/WALLSIZE)][int(newx/WALLSIZE)] == " ":
+    if level[int(py / WALLSIZE)][int(newx / WALLSIZE)] == " ":
         px = newx
-    if level[int(newy/WALLSIZE)][int(px/WALLSIZE)] == " ":
+    if level[int(newy / WALLSIZE)][int(px / WALLSIZE)] == " ":
         py = newy
     return True
 

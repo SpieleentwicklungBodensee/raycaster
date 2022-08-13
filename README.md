@@ -18,8 +18,9 @@ Hinweise:
     - beim zweiten Druck auf ESCAPE wird das Spiel schließlich beendet
     
 - das Rendern des Bodens kann mithilfe von Cython beschleunigt werden, hierfür muss der folgende Befehl ausgeführt werden:
-
 ``` python3 setup.py build_ext --inplace```
+    - Bei Änderungen im Cython-Code muss folgender Befehl ausgeführt werden:
+    ``` python setup.py build_ext --inplace --cythonize```
 
 Was ist Raycasting:
 ===================

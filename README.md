@@ -19,7 +19,7 @@ Hinweise:
     
 - das Rendern des Bodens kann mithilfe von Cython beschleunigt werden, hierfür muss der folgende Befehl ausgeführt werden:
 
-``` python3 setup.py build_ext --inplace```
+```pip3 install -e .```
 
 Was ist Raycasting:
 ===================

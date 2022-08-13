@@ -1,3 +1,5 @@
 fastfloor.*.so
 fastfloor.c
 /build
+*.egg-info
+venv/

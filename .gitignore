@@ -2,4 +2,5 @@ fastfloor.*.so
 fastfloor.c
 /build
 *.egg-info
+__pycache__
 venv/

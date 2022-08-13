@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import pygame
 import math
 cimport cython

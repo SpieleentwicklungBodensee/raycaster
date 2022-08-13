@@ -1,12 +1,18 @@
-from setuptools import setup
-from Cython.Build import cythonize
+from setuptools import setup, Extension, find_packages
 
 setup(
     name="raycaster",
     install_requires= ["pygame", "numpy"],
     url="https://github.com/SpieleentwicklungBodensee/raycaster",
     license="MIT",
-    ext_modules = cythonize('fastfloor.pyx', language_level = 3)
+    packages=["raycaster"],
+    ext_modules = [
+        Extension(
+            "raycaster.fastfloor",
+            sources=["raycaster/fastfloor.pyx"],
+        ),
+    ],
+    package_data = {
+        "raycaster": ["textures/*"]
+    },
 )
-
-# python setup.py build_ext --inplace

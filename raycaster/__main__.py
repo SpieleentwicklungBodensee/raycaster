@@ -1,6 +1,7 @@
 import math
 import time
 import pygame
+from os import path
 
 WIN_W = 1280
 WIN_H = 720
@@ -71,15 +72,19 @@ BRIGHTCOLORS = {'#': (80, 80, 80),
                 'X': (112, 80, 48),
                 }
 
-TEXTURES = {'#': (pygame.image.load('textures/ironwall.png'), pygame.image.load('textures/ironwall-dark.png')),
-            'X': (pygame.image.load('textures/wafflewall.png'), pygame.image.load('textures/wafflewall-dark.png')),
-            ' ': pygame.image.load('textures/floor.png'),
-            'plant': pygame.image.load('textures/plant.png'),
-            'sign-sbo': pygame.image.load('textures/sign-sbo.png'),
-            'fountain': (pygame.image.load('textures/fountain1.png'),
-                         pygame.image.load('textures/fountain2.png'),
-                         pygame.image.load('textures/fountain3.png'),
-                         pygame.image.load('textures/fountain4.png'),
+def load_image(image):
+    texture_path = path.join(path.dirname(path.realpath(__file__)), 'textures', image)
+    return pygame.image.load(texture_path)
+
+TEXTURES = {'#': (load_image('ironwall.png'), load_image('ironwall-dark.png')),
+            'X': (load_image('wafflewall.png'), load_image('wafflewall-dark.png')),
+            ' ': load_image('floor.png'),
+            'plant': load_image('plant.png'),
+            'sign-sbo': load_image('sign-sbo.png'),
+            'fountain': (load_image('fountain1.png'),
+                         load_image('fountain2.png'),
+                         load_image('fountain3.png'),
+                         load_image('fountain4.png'),
                          )
             }
 
@@ -315,7 +320,7 @@ def renderFloor():
             screen.set_at((x, y + scr_h_half), c)
 
 try:
-    import fastfloor
+    from raycaster import fastfloor
     floorRenderer = fastfloor.FloorRenderer(screen, WALLSIZE, FOV, level, TEXTURES)
     def renderFloor():
         floorRenderer.renderFloor(px, py, viewangle)

@@ -320,7 +320,7 @@ def renderFloor():
             screen.set_at((x, y + scr_h_half), c)
 
 try:
-    from raycaster import fastfloor
+    import fastfloor
     floorRenderer = fastfloor.FloorRenderer(screen, WALLSIZE, FOV, level, TEXTURES)
     def renderFloor():
         floorRenderer.renderFloor(px, py, viewangle)
